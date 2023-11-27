@@ -16,5 +16,8 @@
 
         public const string Token = Base + "/token";
         public const string TokenEstimate = "estimate";
+
+        public const string PromptMode = Base + "/prompt-mode";
+        public const string PromptModeGetList = "getlist";
     }
 }

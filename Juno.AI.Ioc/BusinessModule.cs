@@ -10,6 +10,7 @@ namespace Juno.AI.Ioc
         {
             builder.RegisterType<PromptService>().As<IPromptService>();
             builder.RegisterType<VisualService>().As<IVisualService>();
+            builder.RegisterType<PromptModeService>().As<IPromptModeService>();
         }
     }
 }
