@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.4.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Juno.Core.DependencyResolver" Version="1.0.2" />
+    <PackageReference Include="Juno.Core.Filters" Version="1.0.0" />
+    <PackageReference Include="Juno.Core.Middlewares" Version="1.0.13" />
+    <PackageReference Include="Juno.Core.SystemSetting" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Juno.AI.Common\Juno.AI.Common.csproj" />
+    <ProjectReference Include="..\Juno.AI.Ioc\Juno.AI.Ioc.csproj" />
+  </ItemGroup>
+
+</Project>
