@@ -21,7 +21,7 @@ namespace Juno.OpenAI.Adapter.Concrete
                 prompt = prompt,
                 model = OpenApiModels.gpt3_5_turbo_instruct,
                 max_tokens = 150,
-                temperature = 0.5
+                temperature = 0.6
             };
 
             HttpClient httpClient = new HttpClient();
