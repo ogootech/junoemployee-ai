@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Juno.Data.DataProvider" Version="1.0.2" />
+    <PackageReference Include="Juno.Data.PostgreSQL" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Juno.AI.Dto\Juno.AI.Dto.csproj" />
     <ProjectReference Include="..\Juno.OpenAI.Adapter\Juno.OpenAI.Adapter.csproj" />
   </ItemGroup>
