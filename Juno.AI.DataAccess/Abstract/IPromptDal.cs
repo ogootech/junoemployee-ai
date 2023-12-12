@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Juno.AI.Dto;
 
 namespace Juno.AI.DataAccess.Abstract
 {
     public interface IPromptDal
     {
-        Task<string> Send(string prompt);
+        Task<string> Translate(PromptTranslateDto data);
+        Task<string> Send(PromptSendRequestDto data);
     }
 }

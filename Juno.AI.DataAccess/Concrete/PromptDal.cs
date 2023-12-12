@@ -1,4 +1,5 @@
 ﻿using Juno.AI.DataAccess.Abstract;
+using Juno.AI.Dto;
 using Juno.OpenAI.Adapter.Abstract;
 
 namespace Juno.AI.DataAccess.Concrete
@@ -10,9 +11,14 @@ namespace Juno.AI.DataAccess.Concrete
         {
             this.chatGPTAdapter = chatGPTAdapter;
         }
-        public async Task<string> Send(string prompt)
+        public async Task<string> Send(PromptSendRequestDto data)
         {
-            return await chatGPTAdapter.Send(prompt);
+            return await chatGPTAdapter.Send(data);
+        }
+
+        public async Task<string> Translate(PromptTranslateDto data)
+        {
+            return await chatGPTAdapter.Translate(data);
         }
     }
 }

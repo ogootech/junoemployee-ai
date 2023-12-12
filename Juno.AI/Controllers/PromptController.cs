@@ -18,7 +18,13 @@ namespace Juno.AI.Controllers
         [Route(Routes.PromptSend)]
         public async Task<IActionResult> Send([FromBody] PromptSendRequestDto request)
         {
-            return Ok(await promptService.Send(request.Message));
+            return Ok(await promptService.Send(request));
+        }
+        [HttpPost]
+        [Route(Routes.PromptTranslate)]
+        public async Task<IActionResult> Translate([FromBody] PromptTranslateDto request)
+        {
+            return Ok(await promptService.Translate(request));
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿namespace Juno.OpenAI.Adapter.Abstract
+﻿using Juno.AI.Dto;
+
+namespace Juno.OpenAI.Adapter.Abstract
 {
     public interface IChatGPTAdapter
     {
-        Task<string> Send(string prompt);
+        Task<string> Translate(PromptTranslateDto data);
+        Task<string> Send(PromptSendRequestDto data);
     }
 }

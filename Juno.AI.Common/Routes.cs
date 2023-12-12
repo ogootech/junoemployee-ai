@@ -7,7 +7,7 @@
 
         public const string Prompt = Base + "/prompt";
         public const string PromptSend = "send";
-        public const string PromptCalculate = "calculate";
+        public const string PromptTranslate = "translate";
 
         
 

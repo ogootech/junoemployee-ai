@@ -1,7 +1,10 @@
-﻿namespace Juno.AI.Business.Abstract
+﻿using Juno.AI.Dto;
+
+namespace Juno.AI.Business.Abstract
 {
     public interface IPromptService
     {
-        Task<string> Send(string prompt);
+        Task<string> Translate(PromptTranslateDto data);
+        Task<string> Send(PromptSendRequestDto data);
     }
 }

@@ -22,6 +22,7 @@ builder.Services.AddDependencyResolvers(new CoreModule[] { new CoreModule(builde
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuiler =>
 {
+    containerBuiler.RegisterModule(new AdapterModule());
     containerBuiler.RegisterModule(new DataAccessModule());
     containerBuiler.RegisterModule(new BusinessModule());
 });
