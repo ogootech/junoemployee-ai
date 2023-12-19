@@ -2,8 +2,8 @@
 {
     public class PromptTranslateDto
     {
-        public string Language1 { get; set; }
-        public string Language2 { get; set; }
+        public short Language1 { get; set; }
+        public short Language2 { get; set; }
         public string Text { get; set; }
     }
 }

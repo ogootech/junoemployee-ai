@@ -4,7 +4,6 @@ using Juno.AI.Dto.ChatGpt;
 using Juno.OpenAI.Adapter.Abstract;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -15,17 +14,17 @@ namespace Juno.OpenAI.Adapter.Concrete
     {
         private readonly IConfiguration configuration;
         private string apiKey;
+        private string completions_url = "https://api.openai.com/v1/chat/completions";
         public ChatGPTAdapter(IConfiguration configuration)
         {
             apiKey = configuration.GetSection("OpenAiSecretKey").Value;
         }
-        public async Task<string> Translate(PromptTranslateDto data)
+        public async Task<PromptResultDto> Translate(PromptTranslateDto data)
         {
-            string translatedText = string.Empty;
             ChatGptMessageDto message = new ChatGptMessageDto();
             message.Role = ChatGptRoles.User;
-            message.Content = Messages.TranslateMessage.Replace("{Language1}",data.Language1).Replace("{Language2}", data.Language2).Replace("{text}", data.Text);
 
+            message.Content = Messages.TranslateMessage.Replace("{Language1}", GetLanguageText(data.Language1)).Replace("{Language2}", GetLanguageText(data.Language2)).Replace("{text}", data.Text);
 
             ChatGptRequestDto request = new ChatGptRequestDto();
             request.Model = OpenApiModels.gpt_4_1106_preview;
@@ -34,33 +33,11 @@ namespace Juno.OpenAI.Adapter.Concrete
 
             var json = JsonConvert.SerializeObject(request);
 
-            HttpClient httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-            var response = await httpClient.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", request);
-            //response.EnsureSuccessStatusCode();
-            var resultAsString = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var result = JsonConvert.DeserializeObject<ChatGptCompletionResponseDto>(resultAsString);
-                if (result != null)
-                {
-                    if (result.Choices[0].Finish_Reason == ChatGptFinishReasons.Stop)
-                    {
-                        translatedText = result.Choices[0].Message.Content;
-                    }
-                }
-
-            }
-            else
-            {
-                throw new Exception(resultAsString);
-            }
-
-
-            return translatedText;
+            //Result
+            var result = await Post(request);
+            return new PromptResultDto() { Usage = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
         }
-
-        public async Task<string> Send(PromptSendRequestDto data)
+        public async Task<PromptResultDto> Send(PromptSendRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
             request.Model = OpenApiModels.gpt_4_1106_preview;
@@ -100,32 +77,36 @@ namespace Juno.OpenAI.Adapter.Concrete
 
             var json = JsonConvert.SerializeObject(request);
 
-            HttpClient httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-            var response = await httpClient.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", request);
-            //response.EnsureSuccessStatusCode();
-            var resultAsString = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var result = JsonConvert.DeserializeObject<ChatGptCompletionResponseDto>(resultAsString);
-                if (result != null)
-                {
-                    if (result.Choices[0].Finish_Reason == ChatGptFinishReasons.Stop)
-                    {
-                        return result.Choices[0].Message.Content;
-                    }
-                }
-
-            }
-            else
-            {
-                throw new Exception(resultAsString);
-            }
-
-
-            return null;
+            //Result
+            var result = await Post(request);
+            return new PromptResultDto() { Usage = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
         }
-        private List<ChatGptMessageDto> CreatePromptContentTypes(List<string> contentTypes)
+        public async Task<PromptResultDto> MakeLonger(PromptLongerRequestDto data)
+        {
+            ChatGptRequestDto request = new ChatGptRequestDto();
+            request.Model = OpenApiModels.gpt_4_1106_preview;
+            //ShorterOrLonger
+            request.Messages.Add(CreateShorterOrLonger(data.MaxSize));
+            //Prompt
+            request.Messages.Add(CreatePrompt(data.Text));
+            //Result
+            var result = await Post(request);
+            return new PromptResultDto() { Usage = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
+        }
+        public async Task<PromptResultDto> MakeShorter(PromptShorterRequestDto data)
+        {
+            ChatGptRequestDto request = new ChatGptRequestDto();
+            request.Model = OpenApiModels.gpt_4_1106_preview;
+            //ShorterOrLonger
+            request.Messages.Add(CreateShorterOrLonger(data.MaxSize,true));
+            //Prompt
+            request.Messages.Add(CreatePrompt(data.Text));
+            //Result
+            var result = await Post(request);
+            return new PromptResultDto() { Usage = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
+        }
+        #region private
+        private List<ChatGptMessageDto> CreatePromptContentTypes(List<short> contentTypes)
         {
             List<ChatGptMessageDto> list = new List<ChatGptMessageDto>();
             foreach (var type in contentTypes) 
@@ -145,7 +126,7 @@ namespace Juno.OpenAI.Adapter.Concrete
             }
             return list;
         }
-        private List<ChatGptMessageDto> CreateEnrichmentOptions(List<string> enrichmentOptions)
+        private List<ChatGptMessageDto> CreateEnrichmentOptions(List<short> enrichmentOptions)
         {
             List<ChatGptMessageDto> list = new List<ChatGptMessageDto>();
             foreach (var option in enrichmentOptions)
@@ -163,7 +144,7 @@ namespace Juno.OpenAI.Adapter.Concrete
             }
             return list;
         }
-        private List<ChatGptMessageDto> CreateTones(List<string> tones)
+        private List<ChatGptMessageDto> CreateTones(List<short> tones)
         {
             List<ChatGptMessageDto> list = new List<ChatGptMessageDto>();
             foreach (var tone in tones)
@@ -183,7 +164,7 @@ namespace Juno.OpenAI.Adapter.Concrete
             }
             return list;
         }
-        private double CreateTemperature(List<string> tones)
+        private double CreateTemperature(List<short> tones)
         { 
             double temperature = 0.5;
             foreach (var tone in tones)
@@ -200,11 +181,31 @@ namespace Juno.OpenAI.Adapter.Concrete
             }
             return temperature;
         }
-        private ChatGptMessageDto CreateLanguage(string language)
+        private string GetLanguageText(short language)
+        {
+            string lang = string.Empty;
+            switch (language)
+            {
+                case 1: lang = Languages.Turkish; break;
+                case 2: lang = Languages.English; break;
+                default: lang = Languages.Turkish; break;
+            }
+            return lang;
+        }
+        private ChatGptMessageDto CreateLanguage(short language)
         {
             ChatGptMessageDto message = new ChatGptMessageDto();
             message.Role = ChatGptRoles.System;
-            message.Content = "Create all '" + language + "'";
+
+            string lang = string.Empty;
+            switch (language)
+            {
+                case 1: lang = Languages.Turkish; break;
+                case 2: lang = Languages.English; break;
+                default: lang = Languages.Turkish; break;
+            }
+
+            message.Content = "Create all '" + GetLanguageText(language) + "'";
             return message;
         }
         private ChatGptMessageDto CreatePrompt(string prompt)
@@ -214,6 +215,44 @@ namespace Juno.OpenAI.Adapter.Concrete
             message.Content = prompt;
             return message;
         }
+        private ChatGptMessageDto CreateShorterOrLonger(int maxSize, bool isShort = false)
+        {
+            ChatGptMessageDto message = new ChatGptMessageDto();
+            message.Role = ChatGptRoles.System;
 
+            string text = isShort ? "shorter" : "longer";
+
+            message.Content = "Create '" + text + "' and max character size have to be " + maxSize;
+            return message;
+        }
+        private async Task<ChatGptCompletionResponseDto> Post(ChatGptRequestDto request)
+        {
+            ChatGptCompletionResponseDto result = new ChatGptCompletionResponseDto();
+            HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            var response = await httpClient.PostAsJsonAsync(completions_url, request);
+            //response.EnsureSuccessStatusCode();
+            var resultAsString = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                result = JsonConvert.DeserializeObject<ChatGptCompletionResponseDto>(resultAsString);
+                if (result != null)
+                {
+                    if (result.Choices[0].Finish_Reason == ChatGptFinishReasons.Stop)
+                    {
+                        return result;
+                    }
+                }
+
+            }
+            else
+            {
+                throw new Exception(resultAsString);
+            }
+
+            return result;
+        }
+        #endregion
+        
     }
 }

@@ -4,8 +4,10 @@
     {
         public const string Base = "\"Juno.AI\".";
 
-        #region Prompt Mode
-        public const string PromptModeGetList = Base + "prompt_mode_get_list";
+        #region Prompt Option
+        public const string PromptOptionGetList = Base + "prompt_option_getlist";
         #endregion
+
+        
     }
 }

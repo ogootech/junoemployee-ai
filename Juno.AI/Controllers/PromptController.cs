@@ -26,5 +26,23 @@ namespace Juno.AI.Controllers
         {
             return Ok(await promptService.Translate(request));
         }
+        [HttpPost]
+        [Route(Routes.PromptMakeLonger)]
+        public async Task<IActionResult> MakeLonger([FromBody] PromptLongerRequestDto request)
+        {
+            return Ok(await promptService.MakeLonger(request));
+        }
+        [HttpPost]
+        [Route(Routes.PromptMakeShorter)]
+        public async Task<IActionResult> MakeShorter([FromBody] PromptShorterRequestDto request)
+        {
+            return Ok(await promptService.MakeShorter(request));
+        }
+        [HttpGet]
+        [Route(Routes.PromptGetOptionList)]
+        public async Task<IActionResult> GetOptionList()
+        {
+            return Ok(await promptService.GetOptionList());
+        }
     }
 }
