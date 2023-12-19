@@ -13,7 +13,6 @@ namespace Juno.AI.Ioc
             builder.RegisterType<DataProvider>().As<IRelationalDbProvider>();
             builder.RegisterType<PromptDal>().As<IPromptDal>();
             builder.RegisterType<VisualDal>().As<IVisualDal>();
-            builder.RegisterType<PromptModeDal>().As<IPromptModeDal>();
         }
     }
 }

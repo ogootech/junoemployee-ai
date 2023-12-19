@@ -13,6 +13,7 @@ if (builder.Environment.IsProduction())
     builder.Configuration["ConnectionStrings:RedisConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ConnectionStringsRedisConnectionString");
     builder.Configuration["AmazonCredential:AccessId"] = StringHelper.GetEnvironmentVariableWithDecrypt("AmazonCredentialAccessId");
     builder.Configuration["AmazonCredential:SecretKey"] = StringHelper.GetEnvironmentVariableWithDecrypt("AmazonCredentialSecretKey");
+    builder.Configuration["AmazonCredential:OpenAiSecretKey"] = StringHelper.GetEnvironmentVariableWithDecrypt("OpenAiSecretKey");
 }
 
 
@@ -26,6 +27,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuiler =>
     containerBuiler.RegisterModule(new DataAccessModule());
     containerBuiler.RegisterModule(new BusinessModule());
 });
+builder.Services.AddAWSLambdaHosting(LambdaEventSource.ApplicationLoadBalancer);
 
 var app = builder.Build();
 
