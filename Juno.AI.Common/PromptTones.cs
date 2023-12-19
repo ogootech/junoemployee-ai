@@ -2,11 +2,11 @@
 {
     public class PromptTones
     {
-        public const string Offical = "Offical";
-        public const string Casual = "Casual";
-        public const string Professional = "Professional";
-        public const string Enthusiastic = "Enthusiastic";
-        public const string Informative = "Informative";
-        public const string Witty = "Witty";
+        public const short Offical = 1;
+        public const short Casual = 2;
+        public const short Professional = 3;
+        public const short Enthusiastic = 4;
+        public const short Informative = 5;
+        public const short Witty = 6;
     }
 }

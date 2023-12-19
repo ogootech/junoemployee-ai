@@ -2,9 +2,9 @@
 {
     public class PromptEnrichmentOptions
     {
-        public const string NoEmojis = "No Emojis";
-        public const string UseEmojisInAllFields = "Use emojis in all fields";
-        public const string UseEmojisOnlyInContent = "Use emojis only in content";
-        public const string UseEmojisOnlyInTitle = "Use emojis only in title";
+        public const short NoEmojis = 1;
+        public const short UseEmojisInAllFields = 2;
+        public const short UseEmojisOnlyInContent = 3;
+        public const short UseEmojisOnlyInTitle = 4;
     }
 }

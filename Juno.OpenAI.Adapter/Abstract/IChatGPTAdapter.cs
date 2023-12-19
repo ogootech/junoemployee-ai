@@ -5,6 +5,8 @@ namespace Juno.OpenAI.Adapter.Abstract
     public interface IChatGPTAdapter
     {
         Task<string> Translate(PromptTranslateDto data);
+        Task<string> MakeLonger(PromptLongerRequestDto data);
+        Task<string> MakeShorter(PromptShorterRequestDto data);
         Task<string> Send(PromptSendRequestDto data);
     }
 }

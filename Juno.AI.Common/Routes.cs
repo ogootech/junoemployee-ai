@@ -8,8 +8,11 @@
         public const string Prompt = Base + "/prompt";
         public const string PromptSend = "send";
         public const string PromptTranslate = "translate";
+        public const string PromptMakeLonger = "make-longer";
+        public const string PromptMakeShorter = "make-shorter";
+        public const string PromptGetOptionList = "get-option-list";
 
-        
+
 
         public const string Visual = Base + "/visual";
         public const string VisualGenerateImage = "generate-image";

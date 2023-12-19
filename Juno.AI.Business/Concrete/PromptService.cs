@@ -11,6 +11,7 @@ namespace Juno.AI.Business.Concrete
         {
             this.promptDal = promptDal;
         }
+
         public async Task<string> Send(PromptSendRequestDto data)
         {
             return await promptDal.Send(data);
@@ -19,6 +20,21 @@ namespace Juno.AI.Business.Concrete
         public async Task<string> Translate(PromptTranslateDto data)
         {
             return await promptDal.Translate(data);
+        }
+
+        public async Task<List<PromptOptionDto>> GetOptionList()
+        {
+            return await promptDal.GetOptionList();
+        }
+
+        public async Task<string> MakeLonger(PromptLongerRequestDto data)
+        {
+            return await promptDal.MakeLonger(data);
+        }
+
+        public async Task<string> MakeShorter(PromptShorterRequestDto data)
+        {
+            return await promptDal.MakeShorter(data);
         }
     }
 }

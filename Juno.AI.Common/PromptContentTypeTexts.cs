@@ -1,4 +1,4 @@
-﻿namespace Juno.AI.Common
+﻿ namespace Juno.AI.Common
 {
     public class PromptContentTypeTexts
     {

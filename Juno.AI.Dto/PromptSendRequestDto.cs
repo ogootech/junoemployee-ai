@@ -4,15 +4,20 @@
     {
         public PromptSendRequestDto()
         {
-            PromptContentTypes = new List<string>();
-            PromptEnrichmentOptions = new List<string>();
-            PromptTones = new List<string>();
+            PromptCreateTypes = new List<short>();
+            PromptContentTypes = new List<short>();
+            PromptEnrichmentOptions = new List<short>();
+            PromptTones = new List<short>();
         }
-        public string Language { get; set; }
-        public List<string> PromptContentTypes { get; set; }
-        public List<string> PromptEnrichmentOptions { get; set; }
-        public List<string> PromptTones { get; set; }
+        public short Language { get; set; }
+        public List<short> PromptCreateTypes { get; set; }
+        public List<short> PromptContentTypes { get; set; }
+        public List<short> PromptEnrichmentOptions { get; set; }
+        public List<short> PromptTones { get; set; }
         public int MaxToken { get; set; }
         public string Prompt { get; set; }
+        public int TitleSize { get; set; }
+        public int DescriptionSize { get; set; }
+        public int ContentSize { get; set; }
     }
 }
