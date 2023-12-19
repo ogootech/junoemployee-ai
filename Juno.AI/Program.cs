@@ -7,13 +7,17 @@ using Juno.Core.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
+
+builder.Configuration["OpenAiSecretKey"] = StringHelper.GetEnvironmentVariableWithDecrypt("OpenAiSecretKey");
+builder.Configuration["ConnectionStrings:DefaultConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ConnectionStringsDefaultConnectionString");
+builder.Configuration["ConnectionStrings:RedisConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ConnectionStringsRedisConnectionString");
+
 if (builder.Environment.IsProduction())
 {
-    builder.Configuration["ConnectionStrings:DefaultConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ConnectionStringsDefaultConnectionString");
-    builder.Configuration["ConnectionStrings:RedisConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ConnectionStringsRedisConnectionString");
-    builder.Configuration["AmazonCredential:AccessId"] = StringHelper.GetEnvironmentVariableWithDecrypt("AmazonCredentialAccessId");
-    builder.Configuration["AmazonCredential:SecretKey"] = StringHelper.GetEnvironmentVariableWithDecrypt("AmazonCredentialSecretKey");
-    builder.Configuration["AmazonCredential:OpenAiSecretKey"] = StringHelper.GetEnvironmentVariableWithDecrypt("OpenAiSecretKey");
+    builder.Configuration["ConnectionStrings:DefaultConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ProdConnectionStringsDefaultConnectionString");
+    builder.Configuration["ConnectionStrings:RedisConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ProdConnectionStringsRedisConnectionString");
 }
 
 
@@ -31,7 +35,7 @@ builder.Services.AddAWSLambdaHosting(LambdaEventSource.ApplicationLoadBalancer);
 
 var app = builder.Build();
 
-app.UseCustomExceptionHandler(builder.Configuration);
+//app.UseCustomExceptionHandler(builder.Configuration);
 app.UseTransactionMiddleware();
 //app.UseTenantEndDateControlMiddleware(builder.Configuration);
 
