@@ -18,6 +18,11 @@ namespace Juno.OpenAI.Adapter.Concrete
         public ChatGPTAdapter(IConfiguration configuration)
         {
             apiKey = configuration.GetSection("OpenAiSecretKey").Value;
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                throw new Exception("Api key boş olamaz.");
+            }
+
         }
         public async Task<PromptResultDto> Translate(PromptTranslateDto data)
         {
@@ -48,6 +53,12 @@ namespace Juno.OpenAI.Adapter.Concrete
                 //request.Max_Token = data.MaxToken;
             }
 
+            //PromptCreateTypes
+            if (data.PromptCreateTypes.Count > 0)
+            {
+                var list = CreatePromptCreateTypes(data.PromptCreateTypes);
+                request.Messages.AddRange(list);
+            }
             //ContentTypes
             if (data.PromptContentTypes.Count > 0)
             {
@@ -106,6 +117,28 @@ namespace Juno.OpenAI.Adapter.Concrete
             return new PromptResultDto() { Usage = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
         }
         #region private
+        private List<ChatGptMessageDto> CreatePromptCreateTypes(List<short> createTypes)
+        {
+            List<ChatGptMessageDto> list = new List<ChatGptMessageDto>();
+            ChatGptMessageDto message = new ChatGptMessageDto();
+            message.Role = ChatGptRoles.System;
+            string text = "Create ";
+            string jsonPart = "Set in json. ";
+            //parts
+            foreach (var type in createTypes)
+            {
+                switch (type)
+                {
+                    case PromptCreateTypes.All: text += "title,description and content."; jsonPart += "Title in 'title' property, Description in 'description' property, Content in 'content' property."; break;
+                    case PromptCreateTypes.Title: text += "title,"; jsonPart += "Title in 'title' property."; break;
+                    case PromptCreateTypes.Description: text += "description,"; jsonPart += "Description in 'description' property."; break;
+                    case PromptCreateTypes.Content: text += "content,"; jsonPart += "Content in 'content' property"; break;
+                }
+            }
+            message.Content = text.Remove(text.Length - 1) + "." + jsonPart;
+            list.Add(message);
+            return list;
+        }
         private List<ChatGptMessageDto> CreatePromptContentTypes(List<short> contentTypes)
         {
             List<ChatGptMessageDto> list = new List<ChatGptMessageDto>();
