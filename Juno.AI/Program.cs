@@ -7,17 +7,11 @@ using Juno.Core.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
-
-builder.Configuration["OpenAiSecretKey"] = StringHelper.GetEnvironmentVariableWithDecrypt("OpenAiSecretKey");
-builder.Configuration["ConnectionStrings:DefaultConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ConnectionStringsDefaultConnectionString");
-builder.Configuration["ConnectionStrings:RedisConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ConnectionStringsRedisConnectionString");
-
 if (builder.Environment.IsProduction())
 {
-    builder.Configuration["ConnectionStrings:DefaultConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ProdConnectionStringsDefaultConnectionString");
-    builder.Configuration["ConnectionStrings:RedisConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ProdConnectionStringsRedisConnectionString");
+    builder.Configuration["OpenAiSecretKey"] = Environment.GetEnvironmentVariable("OpenAiSecretKey");
+    builder.Configuration["ConnectionStrings:DefaultConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ConnectionStringsDefaultConnectionString");
+    builder.Configuration["ConnectionStrings:RedisConnectionString"] = StringHelper.GetEnvironmentVariableWithDecrypt("ConnectionStringsRedisConnectionString");
 }
 
 
