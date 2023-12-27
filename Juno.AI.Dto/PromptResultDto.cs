@@ -2,7 +2,8 @@
 {
     public class PromptResultDto
     {
-        public int Usage { get; set; }
         public string Message { get; set; }
+        public int UsageToken { get; set; }
+        public int AvailableToken { get; set; }
     }
 }

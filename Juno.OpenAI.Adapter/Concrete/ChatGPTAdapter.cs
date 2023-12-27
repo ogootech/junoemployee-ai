@@ -40,7 +40,7 @@ namespace Juno.OpenAI.Adapter.Concrete
 
             //Result
             var result = await Post(request);
-            return new PromptResultDto() { Usage = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
+            return new PromptResultDto() { UsageToken = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
         }
         public async Task<PromptResultDto> Send(PromptSendRequestDto data)
         {
@@ -90,7 +90,7 @@ namespace Juno.OpenAI.Adapter.Concrete
 
             //Result
             var result = await Post(request);
-            return new PromptResultDto() { Usage = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
+            return new PromptResultDto() { UsageToken = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
         }
         public async Task<PromptResultDto> MakeLonger(PromptLongerRequestDto data)
         {
@@ -102,7 +102,7 @@ namespace Juno.OpenAI.Adapter.Concrete
             request.Messages.Add(CreatePrompt(data.Text));
             //Result
             var result = await Post(request);
-            return new PromptResultDto() { Usage = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
+            return new PromptResultDto() { UsageToken = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
         }
         public async Task<PromptResultDto> MakeShorter(PromptShorterRequestDto data)
         {
@@ -114,7 +114,7 @@ namespace Juno.OpenAI.Adapter.Concrete
             request.Messages.Add(CreatePrompt(data.Text));
             //Result
             var result = await Post(request);
-            return new PromptResultDto() { Usage = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
+            return new PromptResultDto() { UsageToken = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
         }
         #region private
         private List<ChatGptMessageDto> CreatePromptCreateTypes(List<short> createTypes)
