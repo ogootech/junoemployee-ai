@@ -6,7 +6,8 @@
         public const string BaseHealth = "health";
 
         public const string Prompt = Base + "/prompt";
-        public const string PromptSend = "send";
+        public const string PromptCreate = "create";
+        public const string PromptCreateFrom = "create-from";
         public const string PromptTranslate = "translate";
         public const string PromptMakeLonger = "make-longer";
         public const string PromptMakeShorter = "make-shorter";

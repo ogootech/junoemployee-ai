@@ -12,11 +12,14 @@ namespace Juno.AI.Business.Concrete
             this.promptDal = promptDal;
         }
 
-        public async Task<PromptResultDto> Send(PromptSendRequestDto data)
+        public async Task<PromptResultDto> Create(PromptCreateRequestDto data)
         {
-            return await promptDal.Send(data);
+            return await promptDal.Create(data);
         }
-
+        public async Task<PromptResultDto> CreateFrom(PromptCreateFromRequestDto data)
+        {
+            return await promptDal.CreateFrom(data);
+        }
         public async Task<PromptResultDto> Translate(PromptTranslateDto data)
         {
             return await promptDal.Translate(data);

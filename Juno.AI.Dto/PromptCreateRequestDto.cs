@@ -1,14 +1,20 @@
-﻿namespace Juno.AI.Dto
+﻿using System.Text.Json.Serialization;
+
+namespace Juno.AI.Dto
 {
-    public class PromptSendRequestDto
+    public class PromptCreateRequestDto
     {
-        public PromptSendRequestDto()
+        public PromptCreateRequestDto()
         {
             PromptCreateTypes = new List<short>();
             PromptContentTypes = new List<short>();
             PromptEnrichmentOptions = new List<short>();
             PromptTones = new List<short>();
         }
+        [JsonIgnore]
+        public Guid TenantId { get; set; }
+        [JsonIgnore]
+        public Guid UserId { get; set; }
         public short Language { get; set; }
         public List<short> PromptCreateTypes { get; set; }
         public List<short> PromptContentTypes { get; set; }
@@ -19,5 +25,6 @@
         public int TitleSize { get; set; }
         public int DescriptionSize { get; set; }
         public int ContentSize { get; set; }
+        public bool Recreate { get; set; }
     }
 }

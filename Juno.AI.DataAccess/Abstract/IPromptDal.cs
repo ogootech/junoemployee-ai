@@ -4,7 +4,8 @@ namespace Juno.AI.DataAccess.Abstract
 {
     public interface IPromptDal
     {
-        Task<PromptResultDto> Send(PromptSendRequestDto data);
+        Task<PromptResultDto> Create(PromptCreateRequestDto data);
+        Task<PromptResultDto> CreateFrom(PromptCreateFromRequestDto data);
         Task<PromptResultDto> Translate(PromptTranslateDto data);
         Task<PromptResultDto> MakeLonger(PromptLongerRequestDto data);
         Task<PromptResultDto> MakeShorter(PromptShorterRequestDto data);

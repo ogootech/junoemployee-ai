@@ -24,29 +24,12 @@ namespace Juno.OpenAI.Adapter.Concrete
             }
 
         }
-        public async Task<PromptResultDto> Translate(PromptTranslateDto data)
-        {
-            ChatGptMessageDto message = new ChatGptMessageDto();
-            message.Role = ChatGptRoles.User;
-
-            message.Content = Messages.TranslateMessage.Replace("{Language1}", GetLanguageText(data.Language1)).Replace("{Language2}", GetLanguageText(data.Language2)).Replace("{text}", data.Text);
-
-            ChatGptRequestDto request = new ChatGptRequestDto();
-            request.Model = OpenApiModels.gpt_4_1106_preview;
-            request.Temperature = 0.1;
-            request.Messages.Add(message);
-
-            var json = JsonConvert.SerializeObject(request);
-
-            //Result
-            var result = await Post(request);
-            return new PromptResultDto() { UsageToken = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
-        }
-        public async Task<PromptResultDto> Send(PromptSendRequestDto data)
+        public async Task<ChatGptCompletionResponseDto> Create(PromptCreateRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
-            request.Model = OpenApiModels.gpt_4_1106_preview;
+            request.Model = OpenApiModels.gpt_4;
             request.Temperature = CreateTemperature(data.PromptTones);
+            request.Stream = false;
 
             if (data.MaxToken > 0)
             {
@@ -56,7 +39,7 @@ namespace Juno.OpenAI.Adapter.Concrete
             //PromptCreateTypes
             if (data.PromptCreateTypes.Count > 0)
             {
-                var list = CreatePromptCreateTypes(data.PromptCreateTypes);
+                var list = CreatePromptCreateTypes(data);
                 request.Messages.AddRange(list);
             }
             //ContentTypes
@@ -89,50 +72,84 @@ namespace Juno.OpenAI.Adapter.Concrete
             var json = JsonConvert.SerializeObject(request);
 
             //Result
-            var result = await Post(request);
-            return new PromptResultDto() { UsageToken = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
+            return await Post(request);
         }
-        public async Task<PromptResultDto> MakeLonger(PromptLongerRequestDto data)
+        public async Task<ChatGptCompletionResponseDto> CreateFrom(PromptCreateFromRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
-            request.Model = OpenApiModels.gpt_4_1106_preview;
+            request.Stream = false;
+            request.Model = OpenApiModels.gpt_4;
+
+            //Language
+            request.Messages.Add(CreateLanguage(data.Language));
+
+            request.Messages.AddRange(CreateFrom(data.MaxSize, data.Text, data.CreateType));
+
+            //Result
+            return await Post(request);
+        }
+        public async Task<ChatGptCompletionResponseDto> Translate(PromptTranslateDto data)
+        {
+            ChatGptMessageDto message = new ChatGptMessageDto();
+            message.Role = ChatGptRoles.User;
+
+            message.Content = Messages.TranslateMessage.Replace("{Language1}", GetLanguageText(data.Language1)).Replace("{Language2}", GetLanguageText(data.Language2)).Replace("{text}", data.Text);
+
+            ChatGptRequestDto request = new ChatGptRequestDto();
+            request.Stream = false;
+            request.Model = OpenApiModels.gpt_4;
+            request.Temperature = 0.1;
+            request.Messages.Add(message);
+
+            var json = JsonConvert.SerializeObject(request);
+
+            //Result
+            return await Post(request);
+        }
+        public async Task<ChatGptCompletionResponseDto> MakeLonger(PromptLongerRequestDto data)
+        {
+            ChatGptRequestDto request = new ChatGptRequestDto();
+            request.Stream = false;
+            request.Model = OpenApiModels.gpt_4;
             //ShorterOrLonger
             request.Messages.Add(CreateShorterOrLonger(data.MaxSize));
             //Prompt
             request.Messages.Add(CreatePrompt(data.Text));
             //Result
-            var result = await Post(request);
-            return new PromptResultDto() { UsageToken = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
+            return await Post(request);
         }
-        public async Task<PromptResultDto> MakeShorter(PromptShorterRequestDto data)
+        public async Task<ChatGptCompletionResponseDto> MakeShorter(PromptShorterRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
-            request.Model = OpenApiModels.gpt_4_1106_preview;
+            request.Stream = false;
+            request.Model = OpenApiModels.gpt_4;
             //ShorterOrLonger
             request.Messages.Add(CreateShorterOrLonger(data.MaxSize,true));
             //Prompt
             request.Messages.Add(CreatePrompt(data.Text));
             //Result
-            var result = await Post(request);
-            return new PromptResultDto() { UsageToken = result.Usage.Completion_Tokens, Message = result.Choices[0].Message.Content };
+            return await Post(request);
         }
         #region private
-        private List<ChatGptMessageDto> CreatePromptCreateTypes(List<short> createTypes)
+        private List<ChatGptMessageDto> CreatePromptCreateTypes(PromptCreateRequestDto data)
         {
             List<ChatGptMessageDto> list = new List<ChatGptMessageDto>();
             ChatGptMessageDto message = new ChatGptMessageDto();
             message.Role = ChatGptRoles.System;
-            string text = "Create ";
+
+
+
+            string text = data.Recreate ? "Recreate " : "Create ";
             string jsonPart = "Set in json. ";
             //parts
-            foreach (var type in createTypes)
+            foreach (var type in data.PromptCreateTypes)
             {
                 switch (type)
                 {
                     case PromptCreateTypes.All: text += "title,description and content."; jsonPart += "Title in 'title' property, Description in 'description' property, Content in 'content' property."; break;
-                    case PromptCreateTypes.Title: text += "title,"; jsonPart += "Title in 'title' property."; break;
-                    case PromptCreateTypes.Description: text += "description,"; jsonPart += "Description in 'description' property."; break;
-                    case PromptCreateTypes.Content: text += "content,"; jsonPart += "Content in 'content' property"; break;
+                    case PromptCreateTypes.Title: text += "title and max character size has to be " + data.TitleSize; jsonPart += "Title in 'title' property."; break;
+                    case PromptCreateTypes.Description: text += "description and max character size has to be " + data.DescriptionSize; jsonPart += "Description in 'description' property."; break;
+                    case PromptCreateTypes.Content: text += "content and max character size has to be " + data.ContentSize; jsonPart += "Content in 'content' property"; break;
                 }
             }
             message.Content = text.Remove(text.Length - 1) + "." + jsonPart;
@@ -255,8 +272,33 @@ namespace Juno.OpenAI.Adapter.Concrete
 
             string text = isShort ? "shorter" : "longer";
 
-            message.Content = "Create '" + text + "' and max character size have to be " + maxSize;
+            message.Content = "Create '" + text + "' and max character size has to be " + maxSize;
             return message;
+        }
+        private List<ChatGptMessageDto> CreateFrom(int maxSize, string text, short type)
+        {
+            List<ChatGptMessageDto> list = new List<ChatGptMessageDto>();
+            ChatGptMessageDto systemMessage = new ChatGptMessageDto();
+            systemMessage.Role = ChatGptRoles.System;
+            systemMessage.Content = "This is a text : " + text;
+
+            list.Add(systemMessage);
+
+            ChatGptMessageDto userMessage = new ChatGptMessageDto();
+            userMessage.Role = ChatGptRoles.User;
+
+            string createType = string.Empty;
+            switch (type)
+            {
+                case PromptCreateTypes.Title: createType += "title"; break;
+                case PromptCreateTypes.Description: createType += "description"; break;
+                case PromptCreateTypes.Content: text += "content"; break;
+            }
+
+            userMessage.Content = "Create '" + createType + "' about text and max character size have to be " + maxSize;
+
+            list.Add(userMessage);
+            return list;
         }
         private async Task<ChatGptCompletionResponseDto> Post(ChatGptRequestDto request)
         {
