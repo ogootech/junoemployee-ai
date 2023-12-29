@@ -32,7 +32,8 @@ namespace Juno.OpenAI.Adapter.Concrete
             message.Content = Messages.TranslateMessage.Replace("{Language1}", GetLanguageText(data.Language1)).Replace("{Language2}", GetLanguageText(data.Language2)).Replace("{text}", data.Text);
 
             ChatGptRequestDto request = new ChatGptRequestDto();
-            request.Model = OpenApiModels.gpt_4_1106_preview;
+            request.Stream = false;
+            request.Model = OpenApiModels.gpt_4;
             request.Temperature = 0.1;
             request.Messages.Add(message);
 
@@ -45,8 +46,9 @@ namespace Juno.OpenAI.Adapter.Concrete
         public async Task<PromptResultDto> Send(PromptSendRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
-            request.Model = OpenApiModels.gpt_4_1106_preview;
+            request.Model = OpenApiModels.gpt_4;
             request.Temperature = CreateTemperature(data.PromptTones);
+            request.Stream = false;
 
             if (data.MaxToken > 0)
             {
@@ -95,7 +97,8 @@ namespace Juno.OpenAI.Adapter.Concrete
         public async Task<PromptResultDto> MakeLonger(PromptLongerRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
-            request.Model = OpenApiModels.gpt_4_1106_preview;
+            request.Stream = false;
+            request.Model = OpenApiModels.gpt_4;
             //ShorterOrLonger
             request.Messages.Add(CreateShorterOrLonger(data.MaxSize));
             //Prompt
@@ -107,7 +110,8 @@ namespace Juno.OpenAI.Adapter.Concrete
         public async Task<PromptResultDto> MakeShorter(PromptShorterRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
-            request.Model = OpenApiModels.gpt_4_1106_preview;
+            request.Stream = false;
+            request.Model = OpenApiModels.gpt_4;
             //ShorterOrLonger
             request.Messages.Add(CreateShorterOrLonger(data.MaxSize,true));
             //Prompt
