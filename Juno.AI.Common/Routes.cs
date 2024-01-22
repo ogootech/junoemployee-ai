@@ -14,6 +14,10 @@
         public const string PromptGetOptionList = "get-option-list";
 
 
+        public const string PromptHistory = Base + "/prompt-history";
+        public const string PromptHistoryGetList = "getlist";
+
+
 
         public const string Visual = Base + "/visual";
         public const string VisualGenerateImage = "generate-image";

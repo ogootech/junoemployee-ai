@@ -4,6 +4,7 @@
     {
         public Guid TenantId { get; set; }
         public string Request { get; set; }
+        public string GptRequest { get; set; }
         public string Response { get; set; }
         public int CompletionToken { get; set; }
         public int PromptToken { get; set; }

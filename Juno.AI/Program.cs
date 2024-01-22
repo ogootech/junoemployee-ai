@@ -27,6 +27,8 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuiler =>
 });
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.ApplicationLoadBalancer);
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 //app.UseCustomExceptionHandler(builder.Configuration);
@@ -37,4 +39,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseHealthChecks("/ai/health");
+
 app.Run();
+
+
+
