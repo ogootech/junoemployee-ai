@@ -9,6 +9,7 @@ namespace Juno.AI.Ioc
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<PromptService>().As<IPromptService>();
+            builder.RegisterType<PromptHistoryService>().As<IPromptHistoryService>();
             builder.RegisterType<VisualService>().As<IVisualService>();
         }
     }

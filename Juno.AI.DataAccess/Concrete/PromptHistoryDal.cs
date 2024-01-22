@@ -14,6 +14,12 @@ namespace Juno.AI.DataAccess.Concrete
         {
             this.dataProvider = dataProvider;
         }
+
+        public async Task<List<PromptHistoryDto>> GetList(PromptHistoryFilterDto filter)
+        {
+            return await dataProvider.GetList<PromptHistoryDto>(StoredProcedureNames.PromptHıstoryGetList, filter);
+        }
+
         public async Task<int> InsertAndCalculate(PromptHistoryDto data)
         {
             return await dataProvider.Insert<int>(StoredProcedureNames.PromptHıstoryCreateAndCalculateAvailableToken, data);

@@ -5,6 +5,7 @@ using Juno.AI.Dto.ChatGpt;
 using Juno.Data.DataProvider;
 using Juno.OpenAI.Adapter.Abstract;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace Juno.AI.DataAccess.Concrete
 {
@@ -28,32 +29,32 @@ namespace Juno.AI.DataAccess.Concrete
         public async Task<PromptResultDto> Create(PromptCreateRequestDto data)
         {
             var result = await chatGPTAdapter.Create(data);
-            return await InsertHistoryAndSetResult(result, data.TenantId, data.UserId, JsonConvert.SerializeObject(data));
+            return await InsertHistoryAndSetResult(result.Item1, data.TenantId, data.UserId, JsonConvert.SerializeObject(data), result.Item2);
         }
         public async Task<PromptResultDto> CreateFrom(PromptCreateFromRequestDto data)
         {
             var result = await chatGPTAdapter.CreateFrom(data);
-            return await InsertHistoryAndSetResult(result, data.TenantId, data.UserId, JsonConvert.SerializeObject(data));
+            return await InsertHistoryAndSetResult(result.Item1, data.TenantId, data.UserId, JsonConvert.SerializeObject(data), result.Item2);
         }
         public async Task<PromptResultDto> Translate(PromptTranslateDto data)
         {
             var result = await chatGPTAdapter.Translate(data);
-            return await InsertHistoryAndSetResult(result, data.TenantId, data.UserId, JsonConvert.SerializeObject(data));
+            return await InsertHistoryAndSetResult(result.Item1, data.TenantId, data.UserId, JsonConvert.SerializeObject(data), result.Item2);
         }
 
         public async Task<PromptResultDto> MakeLonger(PromptLongerRequestDto data)
         {
             var result = await chatGPTAdapter.MakeLonger(data);
-            return await InsertHistoryAndSetResult(result, data.TenantId, data.UserId, JsonConvert.SerializeObject(data));
+            return await InsertHistoryAndSetResult(result.Item1, data.TenantId, data.UserId, JsonConvert.SerializeObject(data), result.Item2);
         }
 
         public async Task<PromptResultDto> MakeShorter(PromptShorterRequestDto data)
         {
             var result = await chatGPTAdapter.MakeShorter(data);
-            return await InsertHistoryAndSetResult(result, data.TenantId, data.UserId, JsonConvert.SerializeObject(data));
+            return await InsertHistoryAndSetResult(result.Item1, data.TenantId, data.UserId, JsonConvert.SerializeObject(data), result.Item2);
         }
 
-        private async Task<PromptResultDto> InsertHistoryAndSetResult(ChatGptCompletionResponseDto result, Guid tenantId, Guid userId, string request)
+        private async Task<PromptResultDto> InsertHistoryAndSetResult(ChatGptCompletionResponseDto result, Guid tenantId, Guid userId, string request, string gptRequest)
         {
             int availableToken = await promptHistoryDal.InsertAndCalculate(new PromptHistoryDto() 
             {
@@ -61,6 +62,7 @@ namespace Juno.AI.DataAccess.Concrete
                 CreatedBy = userId,
                 CreatedDate = DateTime.UtcNow,
                 Request = request,
+                GptRequest = gptRequest,
                 Response = JsonConvert.SerializeObject(result),
                 CompletionToken = result.Usage.Completion_Tokens,
                 PromptToken = result.Usage.Prompt_Tokens,

@@ -5,10 +5,10 @@ namespace Juno.OpenAI.Adapter.Abstract
 {
     public interface IChatGPTAdapter
     {
-        Task<ChatGptCompletionResponseDto> Translate(PromptTranslateDto data);
-        Task<ChatGptCompletionResponseDto> MakeLonger(PromptLongerRequestDto data);
-        Task<ChatGptCompletionResponseDto> MakeShorter(PromptShorterRequestDto data);
-        Task<ChatGptCompletionResponseDto> Create(PromptCreateRequestDto data);
-        Task<ChatGptCompletionResponseDto> CreateFrom(PromptCreateFromRequestDto data);
+        Task<Tuple<ChatGptCompletionResponseDto, string>> Translate(PromptTranslateDto data);
+        Task<Tuple<ChatGptCompletionResponseDto, string>> MakeLonger(PromptLongerRequestDto data);
+        Task<Tuple<ChatGptCompletionResponseDto, string>> MakeShorter(PromptShorterRequestDto data);
+        Task<Tuple<ChatGptCompletionResponseDto, string>> Create(PromptCreateRequestDto data);
+        Task<Tuple<ChatGptCompletionResponseDto, string>> CreateFrom(PromptCreateFromRequestDto data);
     }
 }

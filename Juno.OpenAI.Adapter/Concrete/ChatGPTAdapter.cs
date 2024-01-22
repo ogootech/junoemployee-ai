@@ -4,6 +4,7 @@ using Juno.AI.Dto.ChatGpt;
 using Juno.OpenAI.Adapter.Abstract;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -24,7 +25,7 @@ namespace Juno.OpenAI.Adapter.Concrete
             }
 
         }
-        public async Task<ChatGptCompletionResponseDto> Create(PromptCreateRequestDto data)
+        public async Task<Tuple<ChatGptCompletionResponseDto, string>> Create(PromptCreateRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
             request.Model = OpenApiModels.gpt_4;
@@ -69,12 +70,12 @@ namespace Juno.OpenAI.Adapter.Concrete
             //Prompt
             request.Messages.Add(CreatePrompt(data.Prompt));
 
-            var json = JsonConvert.SerializeObject(request);
+            string gptRequest = JsonConvert.SerializeObject(request);
+            var gptResult = await Post(request);
 
-            //Result
-            return await Post(request);
+            return Tuple.Create(gptResult, gptRequest);
         }
-        public async Task<ChatGptCompletionResponseDto> CreateFrom(PromptCreateFromRequestDto data)
+        public async Task<Tuple<ChatGptCompletionResponseDto, string>> CreateFrom(PromptCreateFromRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
             request.Stream = false;
@@ -86,9 +87,11 @@ namespace Juno.OpenAI.Adapter.Concrete
             request.Messages.AddRange(CreateFrom(data.MaxSize, data.Text, data.CreateType));
 
             //Result
-            return await Post(request);
+            string gptRequest = JsonConvert.SerializeObject(request);
+            var gptResult = await Post(request);
+            return Tuple.Create(gptResult, gptRequest);
         }
-        public async Task<ChatGptCompletionResponseDto> Translate(PromptTranslateDto data)
+        public async Task<Tuple<ChatGptCompletionResponseDto, string>> Translate(PromptTranslateDto data)
         {
             ChatGptMessageDto message = new ChatGptMessageDto();
             message.Role = ChatGptRoles.User;
@@ -101,12 +104,12 @@ namespace Juno.OpenAI.Adapter.Concrete
             request.Temperature = 0.1;
             request.Messages.Add(message);
 
-            var json = JsonConvert.SerializeObject(request);
-
             //Result
-            return await Post(request);
+            string gptRequest = JsonConvert.SerializeObject(request);
+            var gptResult = await Post(request);
+            return Tuple.Create(gptResult, gptRequest);
         }
-        public async Task<ChatGptCompletionResponseDto> MakeLonger(PromptLongerRequestDto data)
+        public async Task<Tuple<ChatGptCompletionResponseDto, string>> MakeLonger(PromptLongerRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
             request.Stream = false;
@@ -116,9 +119,11 @@ namespace Juno.OpenAI.Adapter.Concrete
             //Prompt
             request.Messages.Add(CreatePrompt(data.Text));
             //Result
-            return await Post(request);
+            string gptRequest = JsonConvert.SerializeObject(request);
+            var gptResult = await Post(request);
+            return Tuple.Create(gptResult, gptRequest);
         }
-        public async Task<ChatGptCompletionResponseDto> MakeShorter(PromptShorterRequestDto data)
+        public async Task<Tuple<ChatGptCompletionResponseDto, string>> MakeShorter(PromptShorterRequestDto data)
         {
             ChatGptRequestDto request = new ChatGptRequestDto();
             request.Stream = false;
@@ -128,7 +133,9 @@ namespace Juno.OpenAI.Adapter.Concrete
             //Prompt
             request.Messages.Add(CreatePrompt(data.Text));
             //Result
-            return await Post(request);
+            string gptRequest = JsonConvert.SerializeObject(request);
+            var gptResult = await Post(request);
+            return Tuple.Create(gptResult, gptRequest);
         }
         #region private
         private List<ChatGptMessageDto> CreatePromptCreateTypes(PromptCreateRequestDto data)
