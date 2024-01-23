@@ -31,7 +31,7 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-//app.UseCustomExceptionHandler(builder.Configuration);
+app.UseCustomExceptionHandler(builder.Configuration);
 app.UseTransactionMiddleware();
 //app.UseTenantEndDateControlMiddleware(builder.Configuration);
 app.UseSecurityMiddleware();
