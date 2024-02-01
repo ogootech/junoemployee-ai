@@ -7,6 +7,7 @@ using Juno.Core.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 if (builder.Environment.IsProduction())
 {
     builder.Configuration["OpenAiSecretKey"] = Environment.GetEnvironmentVariable("OpenAiSecretKey");
@@ -29,6 +30,8 @@ builder.Services.AddAWSLambdaHosting(LambdaEventSource.ApplicationLoadBalancer);
 
 builder.Services.AddHealthChecks();
 
+
+
 var app = builder.Build();
 
 app.UseCustomExceptionHandler(builder.Configuration);
@@ -41,6 +44,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseHealthChecks("/ai/health");
+app.UseHealthChecks("/ai-test/health");
+app.UseHealthChecks("/ai-prod/health");
 
 app.Run();
 

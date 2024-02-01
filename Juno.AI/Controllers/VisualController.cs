@@ -7,6 +7,8 @@ namespace Juno.AI.Controllers
 {
     [ApiController]
     [Route(Routes.Visual)]
+    [Route(Routes.VisualTest)]
+    [Route(Routes.VisualProd)]
     public class VisualController : BaseController
     {
         private readonly IVisualService visualService;

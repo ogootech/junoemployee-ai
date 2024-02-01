@@ -14,7 +14,7 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Juno.Core.DependencyResolver" Version="1.0.2" />
     <PackageReference Include="Juno.Core.Filters" Version="1.0.0" />
-    <PackageReference Include="Juno.Core.Middlewares" Version="1.0.13" />
+    <PackageReference Include="Juno.Core.Middlewares" Version="1.0.14" />
     <PackageReference Include="Juno.Core.SystemSetting" Version="1.0.0" />
   </ItemGroup>
 

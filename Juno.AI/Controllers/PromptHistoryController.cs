@@ -8,6 +8,8 @@ namespace Juno.AI.Controllers
 {
     [ApiController]
     [Route(Routes.PromptHistory)]
+    [Route(Routes.PromptHistoryTest)]
+    [Route(Routes.PromptHistoryProd)]
     public class PromptHistoryController : BaseController
     {
         private readonly IPromptHistoryService promptHistoryService;

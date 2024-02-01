@@ -9,6 +9,8 @@ namespace Juno.AI.Controllers
 {
     [ApiController]
     [Route(Routes.Prompt)]
+    [Route(Routes.PromptTest)]
+    [Route(Routes.PromptProd)]
     public class PromptController : BaseController
     {
         private readonly IPromptService promptService;
