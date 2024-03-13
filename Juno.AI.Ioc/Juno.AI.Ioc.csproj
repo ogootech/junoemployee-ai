@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.4.0" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Juno.AI.Business\Juno.AI.Business.csproj" />
+    <ProjectReference Include="..\Juno.AI.DataAccess\Juno.AI.DataAccess.csproj" />
+    <ProjectReference Include="..\Juno.OpenAI.Adapter\Juno.OpenAI.Adapter.csproj" />
+  </ItemGroup>
+
+</Project>

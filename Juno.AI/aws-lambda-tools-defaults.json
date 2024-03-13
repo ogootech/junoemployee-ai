@@ -1,0 +1,21 @@
+
+{
+    "region" : "eu-central-1",
+    "profile" : "default",
+    "configuration" : "Release",
+    "framework"     : "net6.0",
+    "function-name" : "worksy-ai-prod",
+    "function-description" : "",
+    "package-type"         : "Zip",
+    "function-handler"     : "Juno.AI",
+    "function-memory-size" : 512,
+    "function-role"        : "arn:aws:iam::797134868631:role/worksy-lamda-api-service-default-role",
+    "function-timeout"     : 15,
+    "function-runtime"     : "dotnet6",
+    "function-architecture" : "x86_64",
+    "function-subnets"      : "subnet-019af1d559f40b275,subnet-035785c0a87a25029,subnet-07d53c9ad120c9e78",
+    "function-security-groups" : "sg-0ded0794537710934",
+    "tracing-mode"             : "PassThrough",
+    "environment-variables"    : "",
+    "image-tag"                : ""
+}
